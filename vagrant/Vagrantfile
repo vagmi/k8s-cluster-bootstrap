@@ -1,15 +1,14 @@
 # Configuration
 CLUSTER_SIZE=4
-SSH_PRIVATE_KEY="~/.ssh/id_rsa"
-SSH_PUBLIC_KEY="~/.ssh/id_rsa.pub"
+SSH_PRIVATE_KEY="#{ENV['HOME']}/.ssh/id_rsa"
+SSH_PUBLIC_KEY="#{ENV['HOME']}/.ssh/id_rsa.pub"
 
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/xenial64"
     config.vm.box_version = "20171212.0.0"
 
-    # Workaround for Bug [https://bugs.launchpad.net/cloud-images/+bug/1569237]
-    config.ssh.insert_key = true
-    config.ssh.private_key_path = [SSH_PRIVATE_KEY]
+    config.ssh.insert_key = false
+    config.ssh.private_key_path = [SSH_PRIVATE_KEY, "~/.vagrant.d/insecure_private_key"]
     config.vm.provision "file", source: SSH_PUBLIC_KEY, destination: "~/.ssh/authorized_keys"
 
     (1..CLUSTER_SIZE).each do |i|
